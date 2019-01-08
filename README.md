@@ -1,0 +1,2 @@
+# binglibs
+some go libs
