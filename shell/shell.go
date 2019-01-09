@@ -50,13 +50,16 @@ func New()*Shell{
 	}
 }
 
-//ExecShellCmd exec a shell cmd.
+//Exec exec a shell cmd.
 func(s *Shell)Exec(args... string)error{
 	cmd :=  strings.Join(args, " ")
 	if cmd == "" {
 		return fmt.Errorf("cmd is empty")
 	}
-	command := exec.Command("/bin/bash", "-c", cmd)
+	if s.shell == ""{
+		s.shell = "/bin/bash"
+	}
+	command := exec.Command(s.shell, "-c", cmd)
 	s.Status = CREATED
 	stdout, err := command.StdoutPipe()
 	if err != nil {
@@ -92,6 +95,7 @@ func(s *Shell)Exec(args... string)error{
 	return err
 }
 
+//SendMsg send msg
 func (s *Shell)SendMsg(msg string){
 	if len(s.PipLine) == MAX_POOL_SIZE {
 		<- s.PipLine
